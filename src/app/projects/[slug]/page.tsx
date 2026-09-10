@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRightIcon, ClockIcon } from "@/components/icons";
 import { MarkdownContent } from "@/components/markdown-content";
+import { ProjectCommitment } from "@/components/project-commitment";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getProjectBySlug, projects } from "@/data/projects";
@@ -43,7 +44,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <main>
         <header className="project-hero">
           <div className="project-hero__inner">
-            <Link className="breadcrumb" href="/#projects">
+            <Link className="breadcrumb" href="/projects">
               <span aria-hidden="true">←</span>
               All projects
             </Link>
@@ -57,20 +58,23 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 <p className="project-hero__summary">{project.summary}</p>
               </div>
 
-              <dl className="project-facts">
-                <div>
-                  <dt>Level</dt>
-                  <dd>{project.difficulty}</dd>
-                </div>
-                <div>
-                  <dt>Time</dt>
-                  <dd><ClockIcon />{project.estimatedTime}</dd>
-                </div>
-                <div>
-                  <dt>Tools</dt>
-                  <dd>{project.tools.join(", ")}</dd>
-                </div>
-              </dl>
+              <div className="project-hero__aside">
+                <dl className="project-facts">
+                  <div>
+                    <dt>Level</dt>
+                    <dd>{project.difficulty}</dd>
+                  </div>
+                  <div>
+                    <dt>Time</dt>
+                    <dd><ClockIcon />{project.estimatedTime}</dd>
+                  </div>
+                  <div>
+                    <dt>Tools</dt>
+                    <dd>{project.tools.join(", ")}</dd>
+                  </div>
+                </dl>
+                <ProjectCommitment projectTitle={project.title} />
+              </div>
             </div>
           </div>
         </header>
