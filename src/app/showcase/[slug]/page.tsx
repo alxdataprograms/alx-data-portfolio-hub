@@ -5,21 +5,17 @@ import { ArrowUpRightIcon } from "@/components/icons";
 import { ShowcaseVisual } from "@/components/showcase-visual";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { getShowcaseBySlug, showcaseEntries } from "@/data/showcase";
+import { getApprovedShowcaseBySlug } from "@/lib/data/showcase";
 
 type ShowcaseDetailProps = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return showcaseEntries.map((entry) => ({ slug: entry.slug }));
-}
-
 export async function generateMetadata({ params }: ShowcaseDetailProps): Promise<Metadata> {
-  const entry = getShowcaseBySlug((await params).slug);
+  const entry = await getApprovedShowcaseBySlug((await params).slug);
   return entry ? { title: entry.title, description: entry.summary } : {};
 }
 
 export default async function ShowcaseDetailPage({ params }: ShowcaseDetailProps) {
-  const entry = getShowcaseBySlug((await params).slug);
+  const entry = await getApprovedShowcaseBySlug((await params).slug);
   if (!entry) notFound();
 
   return (
@@ -41,7 +37,7 @@ export default async function ShowcaseDetailPage({ params }: ShowcaseDetailProps
         </header>
 
         <section className="case-study">
-          <ShowcaseVisual variant={entry.visual} />
+          <ShowcaseVisual alt={entry.title} src={entry.coverImageUrl} />
           <div className="case-study__layout">
             <aside>
               <dl>
@@ -56,10 +52,7 @@ export default async function ShowcaseDetailPage({ params }: ShowcaseDetailProps
             </aside>
 
             <article className="case-study__content">
-              <section><p>01</p><div><h2>The challenge</h2><p>{entry.challenge}</p></div></section>
-              <section><p>02</p><div><h2>How I approached it</h2><ul>{entry.approach.map((item) => <li key={item}>{item}</li>)}</ul></div></section>
-              <section><p>03</p><div><h2>What I found</h2><ol>{entry.findings.map((item) => <li key={item}>{item}</li>)}</ol></div></section>
-              <section><p>04</p><div><h2>The outcome</h2><p>{entry.outcome}</p></div></section>
+              <section><p>01</p><div><h2>About the work</h2><p>{entry.summary}</p></div></section>
             </article>
           </div>
         </section>

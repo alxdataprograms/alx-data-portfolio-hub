@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import type { Project } from "@/data/projects";
+import { formatDate } from "@/lib/format-date";
+import type { StaffProject } from "@/types/project";
 
-type StaffProjectListProps = { projects: Project[] };
+type StaffProjectListProps = { projects: StaffProject[] };
 type StatusFilter = "All" | "Drafts" | "Published";
 
 export function StaffProjectList({ projects }: StaffProjectListProps) {
@@ -12,16 +13,15 @@ export function StaffProjectList({ projects }: StaffProjectListProps) {
   const [status, setStatus] = useState<StatusFilter>("All");
 
   const visibleProjects = useMemo(() => {
-    if (status === "Drafts") return [];
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return projects;
-
-    return projects.filter((project) =>
-      [project.title, project.domain, project.course, project.courseName, ...project.skills]
+    return projects.filter((project) => {
+      const matchesStatus = status === "All" || (status === "Drafts" ? project.status === "draft" : project.status === "published");
+      const matchesQuery = !normalized || [project.title, project.domain, project.course, project.courseName, ...project.skills]
         .join(" ")
         .toLowerCase()
-        .includes(normalized),
-    );
+        .includes(normalized);
+      return matchesStatus && matchesQuery;
+    });
   }, [projects, query, status]);
 
   return (
@@ -65,8 +65,8 @@ export function StaffProjectList({ projects }: StaffProjectListProps) {
                 <tr key={project.slug}>
                   <td><strong>{project.title}</strong><span>{project.domain} · {project.difficulty}</span></td>
                   <td>{project.course}<span>{project.courseName}</span></td>
-                  <td><span className="status status--published">Published</span></td>
-                  <td>Today</td>
+                  <td><span className={`status status--${project.status}`}>{project.status}</span></td>
+                  <td>{formatDate(project.updatedAt)}</td>
                   <td><Link href={`/staff/projects/${project.slug}/edit`}>Edit <span aria-hidden="true">→</span></Link></td>
                 </tr>
               ))}

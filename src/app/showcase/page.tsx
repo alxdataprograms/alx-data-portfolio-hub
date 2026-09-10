@@ -3,14 +3,15 @@ import { ArrowUpRightIcon } from "@/components/icons";
 import { ShowcaseVisual } from "@/components/showcase-visual";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { showcaseEntries } from "@/data/showcase";
+import { getApprovedShowcases } from "@/lib/data/showcase";
 
 export const metadata = {
   title: "Learner showcase",
   description: "Explore data projects completed by ALX learners.",
 };
 
-export default function ShowcasePage() {
+export default async function ShowcasePage() {
+  const showcaseEntries = await getApprovedShowcases();
   const [featured, ...entries] = showcaseEntries;
 
   return (
@@ -30,21 +31,29 @@ export default function ShowcasePage() {
         <section className="showcase-library">
           <div className="showcase-library__heading"><span>{showcaseEntries.length} showcases</span><span>Projects completed by ALX Data learners</span></div>
 
-          <Link className="showcase-featured" href={`/showcase/${featured.slug}`}>
-            <ShowcaseVisual variant={featured.visual} />
-            <span className="showcase-featured__copy">
-              <small>Featured work · {featured.course} · {featured.domain}</small>
-              <strong>{featured.title}</strong>
-              <span>{featured.summary}</span>
-              <span className="showcase-featured__meta"><b>{featured.learnerName}</b><em>{featured.tools.join(" · ")}</em></span>
-              <span className="showcase-featured__link">Read the case study <ArrowUpRightIcon /></span>
-            </span>
-          </Link>
+          {featured ? (
+            <Link className="showcase-featured" href={`/showcase/${featured.slug}`}>
+              <ShowcaseVisual alt={featured.title} src={featured.coverImageUrl} />
+              <span className="showcase-featured__copy">
+                <small>{["Featured work", featured.course, featured.domain].filter(Boolean).join(" · ")}</small>
+                <strong>{featured.title}</strong>
+                <span>{featured.summary}</span>
+                <span className="showcase-featured__meta"><b>{featured.learnerName}</b><em>{featured.tools.join(" · ")}</em></span>
+                <span className="showcase-featured__link">View the project <ArrowUpRightIcon /></span>
+              </span>
+            </Link>
+          ) : (
+            <div className="showcase-empty">
+              <strong>No learner work has been approved yet.</strong>
+              <p>Completed submissions will appear here after staff review.</p>
+              <Link href="/showcase/submit">Submit your project <ArrowUpRightIcon /></Link>
+            </div>
+          )}
 
           <div className="showcase-grid">
             {entries.map((entry, index) => (
               <Link className={`showcase-card showcase-card--${index + 1}`} href={`/showcase/${entry.slug}`} key={entry.slug}>
-                <ShowcaseVisual compact variant={entry.visual} />
+                <ShowcaseVisual alt={entry.title} compact src={entry.coverImageUrl} />
                 <span className="showcase-card__copy">
                   <small>{entry.course} · {entry.domain}</small>
                   <strong>{entry.title}</strong>

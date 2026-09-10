@@ -71,6 +71,7 @@ Implement only the following product capabilities unless the user explicitly exp
 - Name and email are private operational data and must not appear in public builder counts.
 - The project may display the resulting learner count.
 - Do not require a learner account for this action in the first version. Keep identity handling isolated so it can later be replaced by ALX identity without rewriting project pages.
+- Authorised staff can view a simple private commitment list containing learner name, email, selected project, and commitment date. Do not add approval, progress tracking, or case-management stages.
 
 ### Portfolio Showcase
 

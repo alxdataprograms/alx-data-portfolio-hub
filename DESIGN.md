@@ -119,6 +119,7 @@ The system is predominantly flat. Separation comes from colour fields, rules, an
 - **Project row:** a numbered editorial list item with a clear title, one summary, restrained skill tags, and metadata aligned opposite the content.
 - **Project brief:** a navy orientation header followed by a maximum 760px reading column and a sticky skills rail on larger screens.
 - **Project commitment:** a signal-lime action beside the project facts that reveals a compact inline form; successful commitment becomes a quiet confirmed state in the same place.
+- **Staff commitment list:** a private, searchable staff table that keeps learner contact details and selected projects easy to scan without introducing workflow states.
 - **Tables and code:** practical document elements with horizontal overflow on small screens and strong header contrast.
 
 **The Brief-First Rule.** Components should help someone choose or complete a project; avoid UI that exists only to make the product feel busier.

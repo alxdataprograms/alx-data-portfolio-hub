@@ -5,10 +5,16 @@ import { ProjectCatalogue } from "@/components/project-catalogue";
 import { ShowcaseVisual } from "@/components/showcase-visual";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { projects } from "@/data/projects";
-import { showcaseEntries } from "@/data/showcase";
+import { getPublishedProjects } from "@/lib/data/projects";
+import { getApprovedShowcases } from "@/lib/data/showcase";
 
-export default function Home() {
+export default async function Home() {
+  const [projects, showcaseEntries] = await Promise.all([
+    getPublishedProjects(),
+    getApprovedShowcases(3),
+  ]);
+  const featuredShowcase = showcaseEntries[0];
+
   return (
     <>
       <SiteHeader />
@@ -26,7 +32,7 @@ export default function Home() {
                 <Link className="secondary-link" href="/showcase">See what learners built <ArrowUpRightIcon /></Link>
               </div>
             </div>
-            <HeroFeature />
+            <HeroFeature showcases={showcaseEntries} />
           </div>
         </section>
 
@@ -51,15 +57,22 @@ export default function Home() {
               <Link href="/showcase">Browse the showcase <ArrowUpRightIcon /></Link>
             </div>
           </div>
-          <Link className="home-showcase__feature" href={`/showcase/${showcaseEntries[0].slug}`}>
-            <ShowcaseVisual variant={showcaseEntries[0].visual} />
-            <span className="home-showcase__feature-copy">
-              <small>{showcaseEntries[0].course} · {showcaseEntries[0].domain} · {showcaseEntries[0].learnerName}</small>
-              <strong>{showcaseEntries[0].title}</strong>
-              <span>{showcaseEntries[0].summary}</span>
-              <b>View the work <ArrowUpRightIcon /></b>
-            </span>
-          </Link>
+          {featuredShowcase ? (
+            <Link className="home-showcase__feature" href={`/showcase/${featuredShowcase.slug}`}>
+              <ShowcaseVisual alt={featuredShowcase.title} src={featuredShowcase.coverImageUrl} />
+              <span className="home-showcase__feature-copy">
+                <small>{[featuredShowcase.course, featuredShowcase.domain, featuredShowcase.learnerName].filter(Boolean).join(" · ")}</small>
+                <strong>{featuredShowcase.title}</strong>
+                <span>{featuredShowcase.summary}</span>
+                <b>View the work <ArrowUpRightIcon /></b>
+              </span>
+            </Link>
+          ) : (
+            <div className="home-showcase__empty">
+              <strong>The first learner showcase could be yours.</strong>
+              <Link href="/showcase/submit">Submit completed work <ArrowUpRightIcon /></Link>
+            </div>
+          )}
         </section>
       </main>
       <SiteFooter />

@@ -1,14 +1,16 @@
 import { ProjectCatalogue } from "@/components/project-catalogue";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { projects } from "@/data/projects";
+import { getPublishedProjects } from "@/lib/data/projects";
 
 export const metadata = {
   title: "Project library",
   description: "Explore practical portfolio projects for ALX Data learners.",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getPublishedProjects();
+
   return (
     <>
       <SiteHeader />

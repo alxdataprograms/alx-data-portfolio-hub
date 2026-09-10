@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { signOutAction } from "@/app/actions/auth";
 
-export function StaffHeader() {
+export function StaffHeader({ email }: { email: string }) {
+  const initials = email.slice(0, 2).toUpperCase() || "TM";
+
   return (
     <header className="staff-header">
       <div className="staff-header__inner">
@@ -17,7 +20,10 @@ export function StaffHeader() {
           <Link className="staff-nav__public" href="/">
             View learner hub <span aria-hidden="true">↗</span>
           </Link>
-          <span className="staff-avatar" aria-label="Staff profile">TM</span>
+          <form action={signOutAction}>
+            <button className="staff-sign-out" type="submit">Sign out</button>
+          </form>
+          <span className="staff-avatar" aria-label={`Signed in as ${email}`}>{initials}</span>
         </nav>
       </div>
     </header>

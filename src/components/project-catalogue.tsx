@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import type { Project } from "@/data/projects";
+import type { Project } from "@/types/project";
 import { ArrowUpRightIcon, ClockIcon, SearchIcon } from "@/components/icons";
 
 type ProjectCatalogueProps = {
@@ -11,13 +11,15 @@ type ProjectCatalogueProps = {
   browseAllHref?: string;
 };
 
-const courses = ["All courses", "DA-2", "DA-3", "DA-4", "Capstone"];
-const difficulties = ["All levels", "Beginner", "Intermediate", "Advanced"];
+const allCourses = "All courses";
+const allLevels = "All levels";
 
 export function ProjectCatalogue({ projects, initialLimit, browseAllHref }: ProjectCatalogueProps) {
   const [query, setQuery] = useState("");
-  const [course, setCourse] = useState(courses[0]);
-  const [difficulty, setDifficulty] = useState(difficulties[0]);
+  const [course, setCourse] = useState(allCourses);
+  const [difficulty, setDifficulty] = useState(allLevels);
+  const courses = useMemo(() => [allCourses, ...Array.from(new Set(projects.map((project) => project.course)))], [projects]);
+  const difficulties = useMemo(() => [allLevels, ...Array.from(new Set(projects.map((project) => project.difficulty)))], [projects]);
 
   const filteredProjects = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -36,13 +38,13 @@ export function ProjectCatalogue({ projects, initialLimit, browseAllHref }: Proj
 
       return (
         (!normalizedQuery || searchable.includes(normalizedQuery)) &&
-        (course === courses[0] || project.course === course) &&
-        (difficulty === difficulties[0] || project.difficulty === difficulty)
+        (course === allCourses || project.course === course) &&
+        (difficulty === allLevels || project.difficulty === difficulty)
       );
     });
   }, [course, difficulty, projects, query]);
 
-  const hasActiveFilters = Boolean(query.trim()) || course !== courses[0] || difficulty !== difficulties[0];
+  const hasActiveFilters = Boolean(query.trim()) || course !== allCourses || difficulty !== allLevels;
   const visibleProjects = initialLimit && !hasActiveFilters
     ? filteredProjects.slice(0, initialLimit)
     : filteredProjects;
@@ -140,8 +142,8 @@ export function ProjectCatalogue({ projects, initialLimit, browseAllHref }: Proj
           <button
             onClick={() => {
               setQuery("");
-              setCourse(courses[0]);
-              setDifficulty(difficulties[0]);
+                setCourse(allCourses);
+                setDifficulty(allLevels);
             }}
             type="button"
           >

@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { saveProjectAction, type ProjectEditorInput } from "@/app/actions/projects";
 import { MarkdownContent } from "@/components/markdown-content";
-import type { Project } from "@/data/projects";
 import { projectTemplates } from "@/data/project-templates";
+import type { Project, ProjectStatus, StaffProject } from "@/types/project";
 import { ProjectMarkdownEditor } from "./project-markdown-editor";
 
 type ProjectEditorProps = {
-  project?: Project;
+  project?: StaffProject;
 };
 
 function toSlug(value: string) {
@@ -20,6 +22,8 @@ function toSlug(value: string) {
 }
 
 export function ProjectEditor({ project }: ProjectEditorProps) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
   const firstTemplate = projectTemplates[0];
   const [templateId, setTemplateId] = useState(project ? "custom" : firstTemplate.id);
   const [title, setTitle] = useState(project?.title ?? "");
@@ -31,8 +35,10 @@ export function ProjectEditor({ project }: ProjectEditorProps) {
   const [skills, setSkills] = useState(project?.skills.join(", ") ?? "");
   const [tools, setTools] = useState(project?.tools.join(", ") ?? firstTemplate.courseName);
   const [summary, setSummary] = useState(project?.summary ?? "");
+  const [datasetUrl, setDatasetUrl] = useState(project?.datasetUrl ?? "");
   const [markdown, setMarkdown] = useState(project?.contentMarkdown ?? firstTemplate.markdown);
   const [mode, setMode] = useState<"edit" | "preview">("edit");
+  const [saveState, setSaveState] = useState("");
 
   function applyTemplate(nextTemplateId: string) {
     const template = projectTemplates.find((item) => item.id === nextTemplateId);
@@ -44,6 +50,33 @@ export function ProjectEditor({ project }: ProjectEditorProps) {
     setMarkdown(template.markdown);
   }
 
+  function save(status: ProjectStatus) {
+    const input: ProjectEditorInput = {
+      id: project?.id,
+      title,
+      course,
+      courseName,
+      domain,
+      difficulty,
+      estimatedTime,
+      skills,
+      tools,
+      summary,
+      datasetUrl,
+      contentMarkdown: markdown,
+    };
+
+    setSaveState("");
+    startTransition(async () => {
+      const result = await saveProjectAction(input, status);
+      setSaveState(result.message);
+      if (result.ok && result.slug) {
+        if (!project) router.replace(`/staff/projects/${result.slug}/edit`);
+        router.refresh();
+      }
+    });
+  }
+
   return (
     <main className="staff-editor-page">
       <div className="staff-editor-topbar">
@@ -53,15 +86,18 @@ export function ProjectEditor({ project }: ProjectEditorProps) {
           <strong>{project ? "Edit project" : "New project"}</strong>
         </div>
         <div className="staff-editor-actions">
-          <button disabled type="button">Save draft</button>
-          <button className="staff-publish-button" disabled type="button">
-            {project ? "Update published project" : "Publish"}
+          {saveState && <span className="staff-save-state" role="status">{saveState}</span>}
+          <button disabled={pending} onClick={() => save("draft")} type="button">
+            {pending ? "Saving…" : project?.status === "published" ? "Return to draft" : "Save draft"}
+          </button>
+          <button className="staff-publish-button" disabled={pending} onClick={() => save("published")} type="button">
+            {pending ? "Saving…" : project?.status === "published" ? "Update published project" : "Publish"}
           </button>
         </div>
       </div>
 
       <div className="staff-editor-heading">
-        <p className="staff-kicker">{project ? "Published project" : "Draft project"}</p>
+        <p className="staff-kicker">{project?.status === "published" ? "Published project" : "Draft project"}</p>
         <h1>{project ? "Edit the brief" : "Create a project"}</h1>
         <p>Keep catalogue details structured. Build the full learner brief freely below.</p>
       </div>
@@ -141,6 +177,11 @@ export function ProjectEditor({ project }: ProjectEditorProps) {
                 <span>Skills</span>
                 <input onChange={(event) => setSkills(event.target.value)} placeholder="Data cleaning, Pivot tables, Charts" value={skills} />
                 <small>Separate skills with commas. These appear in search and on the project listing.</small>
+              </label>
+              <label className="staff-field staff-field--wide">
+                <span>Dataset URL</span>
+                <input onChange={(event) => setDatasetUrl(event.target.value)} placeholder="https://..." type="url" value={datasetUrl} />
+                <small>Optional for drafts. This link appears beside the published project brief.</small>
               </label>
               <label className="staff-field staff-field--wide">
                 <span>Short summary</span>

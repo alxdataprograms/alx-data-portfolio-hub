@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { StaffProjectList } from "@/components/staff/staff-project-list";
-import { projects } from "@/data/projects";
+import { getStaffProjects } from "@/lib/data/projects";
 
 export const metadata = {
   title: "Staff projects",
   description: "Create and maintain ALX Data portfolio project briefs.",
 };
 
-export default function StaffProjectsPage() {
+export default async function StaffProjectsPage() {
+  const projects = await getStaffProjects();
+  const published = projects.filter((project) => project.status === "published").length;
+  const drafts = projects.length - published;
+
   return (
     <main className="staff-page">
       <div className="staff-page__heading">
@@ -23,8 +27,8 @@ export default function StaffProjectsPage() {
 
       <section className="staff-overview" aria-label="Project overview">
         <div><strong>{projects.length}</strong><span>All projects</span></div>
-        <div><strong>{projects.length}</strong><span>Published</span></div>
-        <div><strong>0</strong><span>Drafts</span></div>
+        <div><strong>{published}</strong><span>Published</span></div>
+        <div><strong>{drafts}</strong><span>Drafts</span></div>
       </section>
 
       <StaffProjectList projects={projects} />

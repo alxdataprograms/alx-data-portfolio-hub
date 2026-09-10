@@ -2,21 +2,20 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { showcaseEntries } from "@/data/showcase";
+import { formatDate } from "@/lib/format-date";
+import type { ShowcaseEntry } from "@/types/showcase";
 
 type ReviewStatus = "All" | "Submitted" | "Approved" | "Declined";
 
-const submissions = showcaseEntries.map((entry, index) => ({ ...entry, status: index < 2 ? "Submitted" : "Approved", submitted: index === 0 ? "Today" : index === 1 ? "Yesterday" : "3 days ago" }));
-
-export function ShowcaseReviewList() {
+export function ShowcaseReviewList({ submissions }: { submissions: ShowcaseEntry[] }) {
   const [status, setStatus] = useState<ReviewStatus>("Submitted");
   const [query, setQuery] = useState("");
 
   const visible = useMemo(() => submissions.filter((entry) => {
-    const matchesStatus = status === "All" || entry.status === status;
+    const matchesStatus = status === "All" || entry.status === status.toLowerCase();
     const searchable = `${entry.title} ${entry.learnerName} ${entry.projectTitle}`.toLowerCase();
     return matchesStatus && searchable.includes(query.toLowerCase().trim());
-  }), [query, status]);
+  }), [query, status, submissions]);
 
   return (
     <section className="staff-projects-panel">
@@ -34,9 +33,9 @@ export function ShowcaseReviewList() {
               <tr key={entry.slug}>
                 <td><strong>{entry.title}</strong><span>{entry.projectTitle}</span></td>
                 <td>{entry.learnerName}</td>
-                <td><span className={`status status--${entry.status.toLowerCase()}`}>{entry.status}</span></td>
-                <td>{entry.submitted}</td>
-                <td><Link href={`/staff/showcase/${entry.slug}`}>{entry.status === "Submitted" ? "Review" : "View"} <span aria-hidden="true">→</span></Link></td>
+                <td><span className={`status status--${entry.status}`}>{entry.status}</span></td>
+                <td>{formatDate(entry.submittedAt)}</td>
+                <td><Link href={`/staff/showcase/${entry.slug}`}>{entry.status === "submitted" ? "Review" : "View"} <span aria-hidden="true">→</span></Link></td>
               </tr>
             ))}</tbody>
           </table>

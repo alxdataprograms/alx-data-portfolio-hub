@@ -6,19 +6,15 @@ import { MarkdownContent } from "@/components/markdown-content";
 import { ProjectCommitment } from "@/components/project-commitment";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { getProjectBySlug, projects } from "@/data/projects";
+import { getPublishedProjectBySlug } from "@/lib/data/projects";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
-}
-
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getPublishedProjectBySlug(slug);
 
   if (!project) {
     return {};
@@ -32,7 +28,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getPublishedProjectBySlug(slug);
 
   if (!project) {
     notFound();
@@ -73,7 +69,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     <dd>{project.tools.join(", ")}</dd>
                   </div>
                 </dl>
-                <ProjectCommitment projectTitle={project.title} />
+                <ProjectCommitment projectSlug={project.slug} projectTitle={project.title} />
               </div>
             </div>
           </div>
@@ -87,10 +83,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 <li key={skill}>{skill}</li>
               ))}
             </ul>
-            <a href={project.datasetUrl} rel="noreferrer" target="_blank">
-              View source dataset
-              <ArrowUpRightIcon />
-            </a>
+            {project.datasetUrl && (
+              <a href={project.datasetUrl} rel="noreferrer" target="_blank">
+                View source dataset
+                <ArrowUpRightIcon />
+              </a>
+            )}
           </aside>
 
           <article>

@@ -1,16 +1,30 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { createCommitmentAction } from "@/app/actions/commitments";
 
 type CommitmentState = "closed" | "open" | "submitted";
 
-export function ProjectCommitment({ projectTitle }: { projectTitle: string }) {
+export function ProjectCommitment({ projectSlug, projectTitle }: { projectSlug: string; projectTitle: string }) {
   const [state, setState] = useState<CommitmentState>("closed");
+  const [error, setError] = useState("");
+  const [pending, startTransition] = useTransition();
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setState("submitted");
+    const form = new FormData(event.currentTarget);
+    setError("");
+    startTransition(async () => {
+      const result = await createCommitmentAction({
+        projectSlug,
+        learnerName: String(form.get("name") ?? ""),
+        email: String(form.get("email") ?? ""),
+        consented: form.get("consent") === "on",
+      });
+      if (result.ok) setState("submitted");
+      else setError(result.message);
+    });
   }
 
   if (state === "submitted") {
@@ -44,14 +58,15 @@ export function ProjectCommitment({ projectTitle }: { projectTitle: string }) {
         </label>
 
         <label className="project-commitment__consent">
-          <input required type="checkbox" />
+          <input name="consent" required type="checkbox" />
           <span>ALX may use my name and email to follow up about this project. My details will not be shown publicly.</span>
         </label>
 
         <div className="project-commitment__actions">
-          <button type="submit">Count me in <span aria-hidden="true">↗</span></button>
-          <button onClick={() => setState("closed")} type="button">Not now</button>
+          <button disabled={pending} type="submit">{pending ? "Saving…" : "Count me in"} <span aria-hidden="true">↗</span></button>
+          <button disabled={pending} onClick={() => setState("closed")} type="button">Not now</button>
         </div>
+        {error && <p className="form-error" role="alert">{error}</p>}
       </form>
     );
   }
