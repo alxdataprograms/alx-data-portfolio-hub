@@ -1,10 +1,12 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { ArrowUpRightIcon } from "@/components/icons";
+import { HeroFeature } from "@/components/hero-feature";
 import { ProjectCatalogue } from "@/components/project-catalogue";
+import { ShowcaseVisual } from "@/components/showcase-visual";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { projects } from "@/data/projects";
+import { showcaseEntries } from "@/data/showcase";
 
 export default function Home() {
   return (
@@ -19,42 +21,45 @@ export default function Home() {
               <p className="hero__intro">
                 Choose a real business problem, work with credible public data, and produce evidence of what you can do.
               </p>
-              <Link className="primary-link" href="#projects">
-                Explore projects
-                <ArrowUpRightIcon />
-              </Link>
-            </div>
-
-            <div className="brief-visual" aria-label="A project brief with three stages">
-              <div className="brief-visual__topline">
-                <span>Project brief</span>
-                <span>DA-2 / 01</span>
-              </div>
-              <p className="brief-visual__title">From raw data to a decision someone can use.</p>
-              <div className="brief-visual__plot" aria-hidden="true">
-                <span style={{ "--bar-size": "72%" } as CSSProperties}>Clean</span>
-                <span style={{ "--bar-size": "88%" } as CSSProperties}>Analyse</span>
-                <span style={{ "--bar-size": "62%" } as CSSProperties}>Explain</span>
-              </div>
-              <div className="brief-visual__footer">
-                <span>Real dataset</span>
-                <span>Portfolio-ready output</span>
+              <div className="hero__actions">
+                <Link className="primary-link" href="/projects">Explore projects <ArrowUpRightIcon /></Link>
+                <Link className="secondary-link" href="/showcase">See what learners built <ArrowUpRightIcon /></Link>
               </div>
             </div>
+            <HeroFeature />
           </div>
         </section>
 
         <section className="projects-section" id="projects">
           <div className="section-heading">
             <div>
-              <p>Project library</p>
+              <p>Latest projects</p>
               <h2>Find your next brief</h2>
             </div>
             <p className="section-heading__description">
-              Start with the course you have completed, then choose a problem that points toward the work you want next.
+              Start with the newest project ideas, or explore the complete library when you want more choice.
             </p>
           </div>
-          <ProjectCatalogue projects={projects} />
+          <ProjectCatalogue browseAllHref="/projects" initialLimit={6} projects={projects} />
+        </section>
+
+        <section className="home-showcase">
+          <div className="home-showcase__heading">
+            <div><p>Learner showcase</p><h2>See where a brief can lead.</h2></div>
+            <div>
+              <p>Completed work from learners who turned a project idea into evidence of what they can do.</p>
+              <Link href="/showcase">Browse the showcase <ArrowUpRightIcon /></Link>
+            </div>
+          </div>
+          <Link className="home-showcase__feature" href={`/showcase/${showcaseEntries[0].slug}`}>
+            <ShowcaseVisual variant={showcaseEntries[0].visual} />
+            <span className="home-showcase__feature-copy">
+              <small>{showcaseEntries[0].course} · {showcaseEntries[0].domain} · {showcaseEntries[0].learnerName}</small>
+              <strong>{showcaseEntries[0].title}</strong>
+              <span>{showcaseEntries[0].summary}</span>
+              <b>View the work <ArrowUpRightIcon /></b>
+            </span>
+          </Link>
         </section>
       </main>
       <SiteFooter />

@@ -10,9 +10,9 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="Main navigation" className="site-nav">
-          <Link href="/#projects">Projects</Link>
+          <Link href="/projects">Projects</Link>
           <span className="site-nav__divider" aria-hidden="true" />
-          <span className="site-nav__note">Built for independent practice</span>
+          <Link href="/showcase">Showcase</Link>
         </nav>
       </div>
     </header>

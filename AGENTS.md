@@ -66,15 +66,21 @@ Implement only the following product capabilities unless the user explicitly exp
 ### “I’m Building This”
 
 - A learner can signify that they decided to take on a project.
+- The learner provides their name and email so the team can identify them and follow up when appropriate.
+- Explain how the contact details will be used and collect the learner's agreement when they submit.
+- Name and email are private operational data and must not appear in public builder counts.
 - The project may display the resulting learner count.
-- The exact learner identity mechanism is not final. Keep this isolated so anonymous identity can later be replaced by ALX identity without rewriting project pages.
+- Do not require a learner account for this action in the first version. Keep identity handling isolated so it can later be replaced by ALX identity without rewriting project pages.
 
 ### Portfolio Showcase
 
 - A learner can submit a completed project for the showcase.
+- The first submission form collects the learner's name and private follow-up email, the completed project, a showcase title, a concise explanation, tools used, a GitHub repository, an optional live link, and one required cover image.
+- The learner confirms the work is theirs and agrees that the submitted public details, links, and cover image may be displayed.
 - An authorised staff member approves or declines the submission.
 - Approved submissions appear in the public showcase.
 - This simple submission decision is separate from staff project publishing.
+- Keep this as a curated gallery of work, not learner profiles or a social feed.
 
 ### Feedback
 
@@ -230,14 +236,17 @@ Keep the first schema small. Exact migrations remain subject to implementation r
 ### `project_builders`
 
 - Project reference
-- Learner or anonymous identity reference
+- Learner name and private follow-up email for the initial account-free flow
+- Consent or acknowledgement timestamp where required
 - Timestamp
 - Uniqueness sufficient to prevent an ordinary user from incrementing the same project repeatedly
 
 ### `showcase_submissions`
 
 - Project reference where applicable
-- Learner-provided portfolio details and links
+- Learner-provided portfolio details, links, and cover-image reference
+- Private learner email for submission follow-up
+- Consent or acknowledgement timestamp
 - Submission status: submitted, approved, or declined
 - Staff decision metadata
 
@@ -309,7 +318,6 @@ Do not attempt all product capabilities in one unreviewable change.
 These questions remain deliberately unresolved. Do not silently turn an assumption into permanent product scope:
 
 - The exact first-version feedback interaction
-- Whether learners use anonymous Supabase identities, ALX identities, or another mechanism for “I’m Building This”
-- Whether showcase submissions include direct image uploads in the first increment
+- Whether the account-free “I’m Building This” identity flow later moves to ALX identity
 - The final official ALX subdomain
 - Whether and when Supabase services migrate fully into AWS

@@ -7,12 +7,14 @@ import { ArrowUpRightIcon, ClockIcon, SearchIcon } from "@/components/icons";
 
 type ProjectCatalogueProps = {
   projects: Project[];
+  initialLimit?: number;
+  browseAllHref?: string;
 };
 
 const courses = ["All courses", "DA-2", "DA-3", "DA-4", "Capstone"];
 const difficulties = ["All levels", "Beginner", "Intermediate", "Advanced"];
 
-export function ProjectCatalogue({ projects }: ProjectCatalogueProps) {
+export function ProjectCatalogue({ projects, initialLimit, browseAllHref }: ProjectCatalogueProps) {
   const [query, setQuery] = useState("");
   const [course, setCourse] = useState(courses[0]);
   const [difficulty, setDifficulty] = useState(difficulties[0]);
@@ -39,6 +41,14 @@ export function ProjectCatalogue({ projects }: ProjectCatalogueProps) {
       );
     });
   }, [course, difficulty, projects, query]);
+
+  const hasActiveFilters = Boolean(query.trim()) || course !== courses[0] || difficulty !== difficulties[0];
+  const visibleProjects = initialLimit && !hasActiveFilters
+    ? filteredProjects.slice(0, initialLimit)
+    : filteredProjects;
+  const summaryLabel = initialLimit && !hasActiveFilters
+    ? `${visibleProjects.length} latest project${visibleProjects.length === 1 ? "" : "s"}`
+    : `${filteredProjects.length} project${filteredProjects.length === 1 ? "" : "s"}`;
 
   return (
     <div className="catalogue">
@@ -74,14 +84,15 @@ export function ProjectCatalogue({ projects }: ProjectCatalogueProps) {
       </div>
 
       <div className="catalogue__summary" aria-live="polite">
-        <span>{filteredProjects.length} project{filteredProjects.length === 1 ? "" : "s"}</span>
+        <span>{summaryLabel}</span>
         <span className="catalogue__summary-rule" aria-hidden="true" />
         <span>Real datasets, practical outcomes</span>
+        {browseAllHref && <Link className="catalogue__browse-all" href={browseAllHref}>Browse all projects <ArrowUpRightIcon /></Link>}
       </div>
 
       {filteredProjects.length > 0 ? (
         <ol className="project-list">
-          {filteredProjects.map((project, index) => (
+          {visibleProjects.map((project, index) => (
             <li key={project.slug}>
               <Link className="project-row" href={`/projects/${project.slug}`}>
                 <span className="project-row__number" aria-hidden="true">
