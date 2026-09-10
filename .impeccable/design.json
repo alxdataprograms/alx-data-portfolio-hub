@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-10T13:05:00+03:00",
+  "title": "Design System: ALX Data Portfolio Hub",
+  "extensions": {
+    "colorMeta": {
+      "deep-field-navy": { "role": "primary", "displayName": "Deep Field Navy", "tonalRamp": ["#020718", "#041038", "#07194f", "#12327c", "#3658a0", "#7086bb", "#b4bfdb", "#eef1f8"] },
+      "action-blue": { "role": "secondary", "displayName": "Action Blue", "tonalRamp": ["#061435", "#0b276f", "#0b3dbb", "#1456f0", "#4f7cf5", "#8eabf9", "#c8d6fc", "#f0f4ff"] },
+      "signal-lime": { "role": "tertiary", "displayName": "Signal Lime", "tonalRamp": ["#182304", "#344c08", "#5d8015", "#8eb63a", "#c9ec72", "#daf39c", "#eaf9c7", "#f7fce9"] },
+      "warm-paper": { "role": "neutral", "displayName": "Warm Paper", "tonalRamp": ["#24231f", "#46453e", "#706f66", "#9d9b91", "#c9c7bd", "#e2e0d8", "#f6f5ef", "#fcfbf7"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero and project-title orientation only." },
+      "headline": { "displayName": "Headline", "purpose": "Major catalogue and document sections." },
+      "body": { "displayName": "Body", "purpose": "Descriptions and long project instructions." },
+      "label": { "displayName": "Label", "purpose": "Metadata, filters, and compact navigation." }
+    },
+    "shadows": [
+      { "name": "brief-offset", "value": "18px 18px 0 rgba(20, 86, 240, 0.42)", "purpose": "A single hard offset behind the featured project-brief specimen." }
+    ],
+    "motion": [
+      { "name": "quick-state", "value": "160ms ease", "purpose": "Hover movement and colour changes; disabled for reduced motion." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "700px" },
+      { "name": "compact", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one high-signal action within a dark orientation surface.",
+      "html": "<a class=\"ds-primary\" href=\"#\">Explore projects <span aria-hidden=\"true\">↗</span></a>",
+      "css": ".ds-primary{align-items:center;background:#c9ec72;color:#041038;display:inline-flex;font:700 .9rem Geist,Arial,sans-serif;gap:10px;min-height:48px;padding:0 20px;text-decoration:none;transition:background 160ms ease,transform 160ms ease}.ds-primary:hover{background:#dbf69c;transform:translateY(-2px)}.ds-primary:focus-visible{outline:3px solid #1456f0;outline-offset:3px}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "A joined catalogue-search control with a quiet reading-surface background.",
+      "html": "<label class=\"ds-search\"><svg aria-hidden=\"true\" viewBox=\"0 0 20 20\"><circle cx=\"8.75\" cy=\"8.75\" r=\"5.75\"/><path d=\"m13 13 4 4\"/></svg><input placeholder=\"Search by title, industry, or skill\"></label>",
+      "css": ".ds-search{align-items:center;background:#fcfbf7;border:1px solid #d9d9d1;color:#111a2f;display:flex;min-height:70px;padding:0 23px}.ds-search svg{fill:none;height:20px;margin-right:13px;stroke:#5b6272;stroke-width:1.6;width:20px}.ds-search input{background:transparent;border:0;font:400 .96rem Geist,Arial,sans-serif;outline:0;width:100%}.ds-search:focus-within{outline:3px solid #1456f0;outline-offset:3px}"
+    },
+    {
+      "name": "Skill Tag",
+      "kind": "chip",
+      "refersTo": "skill-tag",
+      "description": "A square, low-emphasis label for concrete skills.",
+      "html": "<span class=\"ds-tag\">Data cleaning</span>",
+      "css": ".ds-tag{background:#f6f5ef;border:1px solid #d9d9d1;color:#424958;display:inline-block;font:590 .68rem Geist,Arial,sans-serif;padding:5px 8px}"
+    },
+    {
+      "name": "Project Row",
+      "kind": "custom",
+      "description": "A content-led catalogue item; not a generic card.",
+      "html": "<a class=\"ds-project\" href=\"#\"><span class=\"ds-project-no\">01</span><span><small>DA-2 · GOOGLE SHEETS · HEALTHCARE</small><strong>Healthcare Facility Performance Tracker</strong><em>Analyse facility performance using public health data.</em></span><b>Open brief ↗</b></a>",
+      "css": ".ds-project{border-block:1px solid #d9d9d1;color:#111a2f;display:grid;gap:20px;grid-template-columns:36px 1fr auto;padding:28px 8px;text-decoration:none;transition:background 160ms ease,padding 160ms ease}.ds-project:hover{background:#fcfbf7;padding-left:18px}.ds-project-no{color:#1456f0;font:760 .72rem Geist,Arial,sans-serif}.ds-project small{color:#5b6272;display:block;font:700 .68rem Geist,Arial,sans-serif;letter-spacing:.07em}.ds-project strong{color:#07194f;display:block;font:690 1.55rem Geist,Arial,sans-serif;margin-top:9px}.ds-project em{color:#5b6272;display:block;font:400 .85rem/1.5 Geist,Arial,sans-serif;margin-top:8px}.ds-project b{align-self:end;color:#1456f0;font:680 .8rem Geist,Arial,sans-serif}.ds-project:focus-visible{outline:3px solid #1456f0;outline-offset:3px}"
+    },
+    {
+      "name": "Site Navigation",
+      "kind": "nav",
+      "description": "Compact navigation anchored by the square ALX mark.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\"><span>ALX</span><b>Data Portfolio Hub</b></a><a href=\"#\">Projects</a></nav>",
+      "css": ".ds-nav{align-items:center;background:#fcfbf7;border-bottom:1px solid #d9d9d1;display:flex;font-family:Geist,Arial,sans-serif;justify-content:space-between;padding:20px 28px}.ds-nav a{align-items:center;color:#111a2f;display:flex;font-size:.85rem;font-weight:650;gap:12px;text-decoration:none}.ds-nav span{align-items:center;background:#07194f;color:#fcfbf7;display:flex;font-size:.7rem;font-weight:800;height:35px;justify-content:center;width:35px}.ds-nav a:hover{color:#1456f0}.ds-nav a:focus-visible{outline:3px solid #1456f0;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Working Field Guide",
+    "overview": "The interface feels like a credible collection of briefs learners can use, annotate, and act on. It is editorial and purposeful, with strong orientation and calm reading rhythm rather than dashboard density.",
+    "keyCharacteristics": ["Strong editorial typography with clear shifts in scale", "Square geometry, restrained lines, and generous whitespace", "ALX colour used for orientation, action, and status—not decoration", "Mobile layouts that preserve the hierarchy rather than merely shrink it"],
+    "rules": [
+      { "name": "The Signal Color Rule", "body": "Lime, blue, and green must carry meaning. Do not use them as scattered decoration.", "section": "colors" },
+      { "name": "The Two-Speed Rule", "body": "Use dramatic scale for orientation and calm, consistent rhythm for project instructions.", "section": "typography" },
+      { "name": "The One Shadow Rule", "body": "Do not add ambient card shadows. Reserve the hard offset shadow for a single featured editorial object.", "section": "elevation" },
+      { "name": "The Brief-First Rule", "body": "Components should help someone choose or complete a project; avoid UI that exists only to make the product feel busier.", "section": "components" }
+    ],
+    "dos": ["Use whitespace and type scale before adding containers.", "Keep project copy readable in a narrow central column.", "Use straight rules and square geometry consistently.", "Make focus states obvious and preserve accessible contrast.", "Let filters and metadata remain compact and secondary to project titles."],
+    "donts": ["Don't introduce generic SaaS landing-page clichés or dense dashboard layouts.", "Don't turn projects into a grid of identical ornamental cards.", "Don't use gamified LMS devices such as streaks, badges, or completion theatre.", "Don't add decorative gradients, glass effects, or rounded pills without a functional reason.", "Don't place long instructional content in wide, edge-to-edge columns."]
+  }
+}
